@@ -1,0 +1,83 @@
+﻿@model JS_Grid_dynamic.Models.Data
+
+<html>
+    <head>
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />  @* This line includes the theme CSS file for JSGrid. *@
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" /> @*This line includes the jQuery library, which is required by JSGrid.*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> @*This line includes the JSGrid library.*@
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script> @* This line includes the JSGrid library.*@
+
+</head>
+<body>
+    <div id="jsGrid"></div>
+    
+    <script>
+        $("#jsGrid").jsGrid({
+            height: "500",
+            width: "100%",
+            inserting: true,
+            editing: true,
+            sorting: true,
+            paging: true,
+            autoload: true, //server data load
+
+            
+            pageSize: 10,
+            pageButtonCount: 2,
+
+
+            controller: {
+                loadData: function () {
+                    return $.ajax({
+                        type: "GET",
+                        url: "/Data/GetData/",
+                        datatype:"json"
+                    });
+
+                },
+                insertItem: function (item) {
+                    return $.ajax({
+                        type: "POST",
+                        url: "/Data/CreateList/",
+                        data: item,  //data: item sends the new data item as data with the request.
+                        datatype: "json",
+                    });
+                },
+
+                updateItem: function (item) {
+                    return $.ajax({
+                        type: "POST",
+                        url: "/Data/UpdateList/",
+                        data: item, //data: item sends the updated data item as data with the request
+                        datatype: "json",
+                    });
+                },
+
+                deleteItem: function (item) {
+                    return $.ajax({
+                        type: "DELETE",
+                        url: "/Data/DeleteList/",
+                        data: item,
+                        datatype: "json",
+                    });
+                },
+            },
+            // onItemUpdated: function () {
+            //     location.reload();
+            // },
+            // onItemInserted: function () {
+            //     location.reload();
+
+            // },
+            //defines the fields to display in the grid.
+            fields: [  
+                { name: "id", type: "int"  },
+                { name: "name", type: "text" },
+                { name: "age", type: "text"},
+                { type: "control" },
+            ],
+        });
+    </script>
+</body>
+</html> 
